@@ -55,15 +55,24 @@ function Interview({ params }) {
                 <div className='justify-center flex flex-col items-center'>
                     
                     {webcamEnabled ? (
-                        <DynamicWebcam
-                            onUserMedia={() => setWebcamEnabled(true)}
-                            onUserMediaError={() => setWebcamEnabled(false)}
-                            mirrored={true}
-                            style={{
-                                height: 500,
-                                width: 600
-                            }}
-                        />
+                        <div
+                        className="relative w-full h-[400px] rounded-lg overflow-hidden"
+                        style={{
+                          border: "3px solid black", // Optional: Add a border around the webcam
+                          maxWidth: "500px", // Optional: Limit the container width
+                        }}>
+
+                            <DynamicWebcam
+                                onUserMedia={() => setWebcamEnabled(true)}
+                                onUserMediaError={() => setWebcamEnabled(false)}
+                                mirrored={true}
+                                style={{
+                                    height: "100%",
+                                    width: "100%",
+                                    objectFit:"cover"
+                                }}
+                                />
+                        </div>
                     ) : (
                         <>
                             <WebcamIcon className='h-72 w-full p-20 my-7 bg-secondary rounded-lg border' />

@@ -7,12 +7,17 @@ import { eq } from "drizzle-orm";
 import { MockInterview } from "@/utils/schema";
 import QuestionsSections from "./_components/QuestionsSections";
 import RecordAnswerSection from "./_components/RecordAnswerSection";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
 
 function StartInterview({ params }) {
   const { interviewId } = use(params); // Extract `interviewId` from params
   const [interviewData, setInterviewData] = useState(null);
   const [mockInterviewQuestion, setMockInterviewQuestion] = useState([]);
-  const [activeQuestionIndex, setQuestionIndex] = useState(0);
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const router = useRouter();
+
 
   useEffect(() => {
     if (interviewId) {
@@ -48,7 +53,9 @@ function StartInterview({ params }) {
     }
   };
 
-
+  const feedbackclick=()=>{
+    router.push(`/Dashboard/interview/${interviewData?.mockId}+/feedback`);
+  };
 
   
   return (
@@ -67,6 +74,15 @@ function StartInterview({ params }) {
         interviewData={interviewData}
         
         />
+      </div>
+      <div className="flex justify-between gap-6 my-5">
+       {activeQuestionIndex>0 && 
+       <Button onClick={()=>setActiveQuestionIndex(activeQuestionIndex-1)}>Previous Question</Button> }
+       {activeQuestionIndex!=mockInterviewQuestion?.length-1 &&
+        <Button onClick={()=>setActiveQuestionIndex(activeQuestionIndex+1)}> Next Question</Button>}
+       {activeQuestionIndex==mockInterviewQuestion?.length-1 &&
+      <Button onClick={feedbackclick}>End Question</Button>
+      }
       </div>
     </div>
   );

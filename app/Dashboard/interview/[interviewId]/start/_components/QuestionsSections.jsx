@@ -25,7 +25,7 @@ function QuestionsSections({ mockInterviewQuestion,activeQuestionIndex}) {
                         key={index} // Add a unique key for each question
                         className={`p-2 bg-secondary rounded-full
                         text-xs md:text-sm text-center cursor-pointer
-                        ${activeQuestionIndex==index&&'bg-red-600 text-white'}`}>
+                        ${activeQuestionIndex==index&&'bg-red-500 text-white'}`}>
                         Question #{index + 1}
                         {/* : {item.question} */}
                     </h2>
