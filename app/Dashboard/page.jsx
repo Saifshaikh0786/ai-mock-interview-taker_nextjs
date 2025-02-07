@@ -6,6 +6,7 @@ import { getUserInterviewData } from '@/utils/userData';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import moment from 'moment';
 import InterviewList from './interview/[interviewId]/start/_components/InterviewList';
+import { useRouter } from 'next/navigation';
 
 function Dashboard() {
     const { user } = useUser();
