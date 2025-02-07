@@ -1,181 +1,167 @@
-"use client";
+"use client"; // Ensure client-side rendering
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import moment from "moment";
-import { getUserInterviewData } from "@/utils/userData";
 import AddNewInterview from "./_components/AddNewInterview";
-import InterviewList from "./_components/InterviewList";
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import InterviewList from "./interview/[interviewId]/start/_components/InterviewList";
+import { getUserInterviewData } from "@/utils/userData";
+
+// Dynamically load Recharts (avoiding server-side issues)
+const BarChart = dynamic(() => import("recharts").then(mod => mod.BarChart), { ssr: false });
+const Bar = dynamic(() => import("recharts").then(mod => mod.Bar), { ssr: false });
+const LineChart = dynamic(() => import("recharts").then(mod => mod.LineChart), { ssr: false });
+const Line = dynamic(() => import("recharts").then(mod => mod.Line), { ssr: false });
+const XAxis = dynamic(() => import("recharts").then(mod => mod.XAxis), { ssr: false });
+const YAxis = dynamic(() => import("recharts").then(mod => mod.YAxis), { ssr: false });
+const CartesianGrid = dynamic(() => import("recharts").then(mod => mod.CartesianGrid), { ssr: false });
+const Tooltip = dynamic(() => import("recharts").then(mod => mod.Tooltip), { ssr: false });
+const ResponsiveContainer = dynamic(() => import("recharts").then(mod => mod.ResponsiveContainer), { ssr: false });
 
 function Dashboard() {
-  const { user } = useUser();
-  const router = useRouter();
-  const [interviewData, setInterviewData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    const { user } = useUser();
+    const router = useRouter();
+    const [interviewData, setInterviewData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user?.primaryEmailAddress?.emailAddress) return;
-    
-    const fetchInterviewData = async () => {
-      try {
-        setLoading(true);
-        const data = await getUserInterviewData(user.primaryEmailAddress.emailAddress);
-        setInterviewData(data);
-      } catch (err) {
-        setError("Failed to load interview data.");
-        console.error("Error fetching interview data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Fetch interview data
+    useEffect(() => {
+        if (user?.primaryEmailAddress?.emailAddress) {
+            const fetchData = async () => {
+                try {
+                    setLoading(true);
+                    const data = await getUserInterviewData(user.primaryEmailAddress.emailAddress);
+                    setInterviewData(data);
+                } catch (error) {
+                    console.error("Error fetching interview data:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        }
+    }, [user]);
 
-    fetchInterviewData();
-  }, [user]);
+    // Calculate analytics data
+    const calculateAnalytics = () => {
+        if (!interviewData.length) return null;
 
-  const calculateAnalytics = () => {
-    if (!interviewData.length) return null;
+        const questionRatings = interviewData.map(item => ({
+            rating: Math.round(Number(item.rating)),
+            createdAt: item.createdAt,
+        }));
 
-    const questionRatings = interviewData.map((item) => ({
-      rating: Math.round(Number(item.rating)),
-      createdAt: item.createdAt,
-    }));
+        const ratingDistribution = Array.from({ length: 10 }, (_, i) => ({
+            rating: i + 1,
+            count: questionRatings.filter(q => q.rating === i + 1).length,
+        }));
 
-    const ratingDistribution = Array.from({ length: 10 }, (_, i) => ({
-      rating: i + 1,
-      count: questionRatings.filter((q) => q.rating === i + 1).length,
-    }));
+        const sessionData = interviewData.reduce((acc, curr) => {
+            const sessionId = curr.mockIdRef;
+            if (!acc[sessionId]) {
+                acc[sessionId] = { date: curr.createdAt, totalRating: 0, questionCount: 0 };
+            }
+            acc[sessionId].totalRating += Number(curr.rating);
+            acc[sessionId].questionCount++;
+            return acc;
+        }, {});
 
-    const sessionData = interviewData.reduce((acc, curr) => {
-      const sessionId = curr.mockIdRef;
-      if (!acc[sessionId]) {
-        acc[sessionId] = {
-          date: curr.createdAt,
-          totalRating: 0,
-          questionCount: 0,
+        const performanceData = Object.values(sessionData).map(session => ({
+            date: moment(session.date).format("MMM DD"),
+            avgRating: (session.totalRating / session.questionCount).toFixed(1),
+        })).sort((a, b) => moment(a.date).valueOf() - moment(b.date).valueOf());
+
+        const totalRating = performanceData.reduce((acc, curr) => acc + Number(curr.avgRating), 0);
+        const averageRating = performanceData.length > 0 ? (totalRating / performanceData.length).toFixed(1) : 0;
+
+        return {
+            averageRating,
+            ratingDistribution,
+            performanceData,
+            totalSessions: performanceData.length,
+            totalQuestions: interviewData.length,
         };
-      }
-      acc[sessionId].totalRating += Number(curr.rating);
-      acc[sessionId].questionCount++;
-      return acc;
-    }, {});
-
-    const performanceData = Object.values(sessionData)
-      .map((session) => ({
-        date: moment(session.date).format("MMM DD"),
-        avgRating: (session.totalRating / session.questionCount).toFixed(1),
-      }))
-      .sort((a, b) => moment(a.date).valueOf() - moment(b.date).valueOf());
-
-    const totalRating = performanceData.reduce((acc, curr) => acc + Number(curr.avgRating), 0);
-    const averageRating = performanceData.length > 0 ? (totalRating / performanceData.length).toFixed(1) : 0;
-
-    return {
-      averageRating,
-      ratingDistribution,
-      performanceData,
-      totalSessions: performanceData.length,
-      totalQuestions: interviewData.length,
     };
-  };
 
-  const analytics = calculateAnalytics();
+    const analytics = calculateAnalytics();
 
-  return (
-    <div className="w-full bg-gradient-to-br from-slate-900 to-slate-800 p-8 overflow-y-auto">
-      <div className="w-full max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="space-y-4 pt-4">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text text-transparent">
-            Interview Analytics Dashboard
-          </h1>
-          <p className="text-slate-300/80 text-lg font-light">
-            AI-Powered Interview Performance Insights
-          </p>
-        </div>
-
-        {/* Loading & Error Handling */}
-        {loading && <p className="text-blue-400">Loading interview data...</p>}
-        {error && <p className="text-red-400">{error}</p>}
-
-        {/* Add New Interview Section */}
-        <div className="bg-slate-800/30 rounded-xl p-6 border border-slate-700/50 backdrop-blur-xl shadow-lg">
-          <AddNewInterview onSuccess={() => setInterviewData([])} />
-        </div>
-
-        {analytics && (
-          <div className="space-y-8 pb-12">
-            {/* Performance Summary */}
-            <div className="bg-slate-800/20 rounded-xl p-6 border border-slate-700/30">
-              <div className="flex flex-col md:flex-row justify-between">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-200">Performance Summary</h2>
-                  <p className="text-slate-400 mt-2 text-sm">
-                    {analytics.totalQuestions} questions across {analytics.totalSessions} sessions
-                  </p>
+    return (
+        <div className="w-full bg-gradient-to-br from-slate-900 to-slate-800 p-8 overflow-y-auto">
+            <div className="max-w-7xl mx-auto space-y-8">
+                {/* Header Section */}
+                <div className="space-y-4 pt-4">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text text-transparent">
+                        Interview Analytics Dashboard
+                    </h1>
+                    <p className="text-slate-300/80 text-lg font-light">
+                        AI-Powered Interview Performance Insights
+                    </p>
                 </div>
-                <div className="mt-4 md:mt-0 flex items-center space-x-4">
-                  <div className="bg-slate-700/30 px-4 py-2 rounded-lg">
-                    <span className="text-slate-300 text-sm">Last Updated: </span>
-                    <span className="text-blue-300 font-medium">{moment().format("h:mm A")}</span>
-                  </div>
+
+                {/* Add New Interview Section */}
+                <div className="bg-slate-800/30 rounded-xl p-6 border border-slate-700/50 backdrop-blur-xl shadow-lg">
+                    <AddNewInterview onSuccess={() => setInterviewData([])} />
                 </div>
-              </div>
+
+                {analytics && (
+                    <div className="space-y-8 pb-12">
+                        {/* Analytics Overview */}
+                        <div className="bg-slate-800/20 rounded-xl p-6 border border-slate-700/30">
+                            <div className="flex flex-col md:flex-row justify-between">
+                                <div>
+                                    <h2 className="text-2xl font-semibold text-slate-200">Performance Summary</h2>
+                                    <p className="text-slate-400 mt-2 text-sm">
+                                        {analytics.totalQuestions} questions across {analytics.totalSessions} sessions
+                                    </p>
+                                </div>
+                                <div className="mt-4 md:mt-0 flex items-center space-x-4">
+                                    <div className="bg-slate-700/30 px-4 py-2 rounded-lg">
+                                        <span className="text-slate-300 text-sm">Last Updated: </span>
+                                        <span className="text-blue-300 font-medium">{moment().format("h:mm A")}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Rating Distribution Chart */}
+                        <div className="bg-slate-800/20 rounded-xl p-6 border border-slate-700/30 backdrop-blur-xl h-[500px]">
+                            <h3 className="text-lg font-semibold text-slate-200">Question Rating Distribution</h3>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={analytics.ratingDistribution}>
+                                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
+                                    <XAxis dataKey="rating" stroke="#94a3b8" />
+                                    <YAxis stroke="#94a3b8" />
+                                    <Tooltip />
+                                    <Bar dataKey="count" fill="url(#ratingGradient)" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+
+                        {/* Performance Timeline */}
+                        <div className="bg-slate-800/20 rounded-xl p-6 border border-slate-700/30 backdrop-blur-xl h-[500px]">
+                            <h3 className="text-lg font-semibold text-slate-200">Performance Timeline</h3>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={analytics.performanceData}>
+                                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
+                                    <XAxis dataKey="date" stroke="#94a3b8" />
+                                    <YAxis domain={[0, 10]} stroke="#94a3b8" />
+                                    <Tooltip />
+                                    <Line type="monotone" dataKey="avgRating" stroke="#818cf8" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
             </div>
-
-            {/* Interview List */}
             <InterviewList />
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Rating Distribution */}
-              <div className="bg-slate-800/20 rounded-xl p-6 border border-slate-700/30 h-72">
-                <h3 className="text-lg font-semibold text-slate-200">Rating Distribution</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics.ratingDistribution}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="rating" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="#6366f1" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Performance Timeline */}
-              <div className="bg-slate-800/20 rounded-xl p-6 border border-slate-700/30 h-72">
-                <h3 className="text-lg font-semibold text-slate-200">Performance Timeline</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={analytics.performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" stroke="#94a3b8" />
-                    <YAxis domain={[0, 10]} stroke="#94a3b8" />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="avgRating" stroke="#818cf8" strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 export default Dashboard;
+
 
 
 
