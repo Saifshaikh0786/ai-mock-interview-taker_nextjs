@@ -1,44 +1,49 @@
-"use client";  // Ensures it's a Client Component
+
+"use client";
 
 import { Button } from "@/components/ui/button";
-import React from "react";
 import { useRouter } from "next/navigation";
+import moment from "moment";
 
 function InterviewItemCard({ interview }) {
     const router = useRouter();
 
-    // const onstart = () => {
-    //     if (interview?.mockId) {
-    //         router.push(`/Dashboard/interview/${interview.mockId}`);
-    //     } else {
-    //         console.error("Interview mockId is undefined!");
-    //     }
-    // };
-    const onstart = () => {
-        console.log("Button Clicked!"); // Check if this logs when clicking the button
-        console.log("Mock ID:", interview?.mockId); // Check if mockId is present
-    
+    const handleStartInterview = () => {
         if (interview?.mockId) {
             router.push(`/Dashboard/interview/${interview.mockId}`);
-        } else {
-            console.error("Interview mockId is undefined!");
         }
     };
-    
-
-    console.log(interview?.mockId); // Debugging
 
     return (
-        <div className="border shadow-sm rounded-lg p-3">
-            <h2 className="font-bold text-white">{interview?.jobPosition}</h2>
-            <h2 className="text-sm text-white">{interview?.jobExperience} Years of Experience</h2>
-            <h2 className="text-white">Created At: {interview?.createdAt} </h2>
-            <div className="flex justify-between mt-4 gap-5">
-                <Button size="sm" variant="outline" className="w-full">
-                    Feedback
+        <div className="border border-slate-700/50 bg-slate-800/30 backdrop-blur-xl rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="space-y-3">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text text-transparent">
+                    {interview?.jobPosition}
+                </h2>
+                
+                <div className="flex items-center gap-3 text-slate-400">
+                    <span className="bg-slate-700/30 px-3 py-1 rounded-full text-sm">
+                        {interview?.jobExperience} Years Experience
+                    </span>
+                    <span className="text-slate-600">•</span>
+                    <span className="text-sm text-slate-400">
+                        {moment(interview?.createdAt).format('MMM D, YYYY')}
+                    </span>
+                </div>
+            </div>
+
+            <div className="flex gap-4 mt-6">
+                <Button 
+                     
+                    className="w-full border-slate-600 hover:bg-slate-700/20 hover:text-slate-200 text-slate-300"
+                >
+                    View Feedback
                 </Button>
-                <Button size="sm" className="w-full" onClick={onstart}>
-                    Start Again
+                <Button 
+                    onClick={handleStartInterview}
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 text-white"
+                >
+                    Restart Session
                 </Button>
             </div>
         </div>

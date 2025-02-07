@@ -94,6 +94,8 @@ function Dashboard() {
                     </p>
                 </div>
 
+                
+
                 {/* Add New Interview Section */}
                 <div className="bg-slate-800/30 rounded-xl p-6 border border-slate-700/50 backdrop-blur-xl shadow-lg">
                     <AddNewInterview onSuccess={fetchInterviewData} />
@@ -120,6 +122,8 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
+
+                        <InterviewList></InterviewList>
 
                         {/* Metrics Grid */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
