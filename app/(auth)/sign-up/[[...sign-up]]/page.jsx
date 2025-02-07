@@ -14,7 +14,7 @@ export default function Page() {
 
       <div className="hidden lg:relative lg:block lg:p-12">
         <a className="block text-white" href="#">
-          <span className="sr-only">Home</span>
+          <span className="sr-only">Dashboard</span>
           <svg
             className="h-8 sm:h-10"
             viewBox="0 0 28 24"
@@ -49,7 +49,7 @@ export default function Page() {
             className="inline-flex size-16 items-center justify-center rounded-full bg-white text-blue-600 sm:size-20"
             href="#"
           >
-            <span className="sr-only">Home</span>
+            <span className="sr-only">Dashboard</span>
             <svg
               className="h-8 sm:h-10"
               viewBox="0 0 28 24"
@@ -80,6 +80,6 @@ export default function Page() {
   </div>
 </section>
 
-    )
+ )
 
 }
