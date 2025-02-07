@@ -2,8 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Remove default browser padding/margin */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure full viewport height */
+html, body, #__next {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+/* Remove default body margin */
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Ensure full-width elements */
+.full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
+}
+@keyframes underline-glow {
+  0% { opacity: 0; transform: scaleX(0); }
+  50% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.4; }
+}
+
+.animate-underline-glow {
+  animation: underline-glow 0.6s ease-out forwards;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+@keyframes underline {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-underline {
+  animation: underline 0.3s ease-out forwards;
 }
 
 @layer base {

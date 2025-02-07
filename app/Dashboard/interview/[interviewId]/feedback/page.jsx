@@ -12,11 +12,14 @@ import {
 } from "@/components/ui/collapsible";
 import { useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 function Feedback({ params }) {
     const unwrappedParams = use(params);
     const { interviewId } = unwrappedParams;
     const [feedbackList, setFeedbackList] = useState([]);
+    const route=useRouter();
 
     useEffect(() => {
         GetFeedback();
@@ -149,6 +152,7 @@ function Feedback({ params }) {
                     
                 </p>
             </div>
+            <Button onClick={()=>route.replace('/Dashboard')}>Go Home to see your progress</Button>
         </div>
     );
 }
