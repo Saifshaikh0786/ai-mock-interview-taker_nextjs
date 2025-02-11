@@ -45,7 +45,7 @@ function AddNewInterview() {
 
 
             const MockJsonResponse =await result.response.text().replace('```json','').replace('```','');
-            console.log("Raw Response:", MockJsonResponse);
+            // console.log("Raw Response:", MockJsonResponse);
 
             const parsedResponse = JSON.parse(MockJsonResponse);
             
@@ -68,7 +68,7 @@ function AddNewInterview() {
                 router.push(`/Dashboard/interview/${resp[0].mockId}`);
             }
         } catch (error) {
-            console.error("Error:", error);
+            // console.error("Error:", error);
         } finally {
             setLoading(false);
         }

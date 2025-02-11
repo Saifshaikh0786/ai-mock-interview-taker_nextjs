@@ -66,7 +66,7 @@ function RecordAnswerSection({ mockInterviewQuestion, activeQuestionIndex, inter
         const result = await chatSession.sendMessage(feedbackPrompt);
         const mockJsonResp = await result.response.text();
 
-        console.log("🔍 Raw AI Response:", mockJsonResp); // Debugging log
+        // console.log("🔍 Raw AI Response:", mockJsonResp); // Debugging log
 
         // Extract JSON safely
         const jsonMatch = mockJsonResp.match(/\{[\s\S]*\}/); // Extracts JSON content
@@ -95,7 +95,7 @@ function RecordAnswerSection({ mockInterviewQuestion, activeQuestionIndex, inter
           setResults([]);
         }
       } catch (error) {
-        console.error("❌ Error processing feedback:", error);
+        // console.error("❌ Error processing feedback:", error);
         toast({
           title: "Error",
           description: "Failed to process feedback. Please try again.",

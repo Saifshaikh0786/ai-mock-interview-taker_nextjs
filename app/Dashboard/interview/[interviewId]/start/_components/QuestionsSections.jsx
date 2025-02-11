@@ -7,7 +7,7 @@ function QuestionsSections({ mockInterviewQuestion = [], activeQuestionIndex = 0
     const [questions, setQuestions] = useState([]);
 
     useEffect(() => {
-        console.log("Received questions:", mockInterviewQuestion); // Debugging log
+        // console.log("Received questions:", mockInterviewQuestion); // Debugging log
 
         // Ensure `mockInterviewQuestion` is an array
         setQuestions(

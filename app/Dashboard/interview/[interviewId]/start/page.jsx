@@ -32,7 +32,7 @@ function StartInterview({ params }) {
         .from(MockInterview)
         .where(eq(MockInterview.mockId, interviewId));
 
-      console.log("Database result:", result); // Debugging log
+      // console.log("Database result:", result); // Debugging log
 
       if (result && result.length > 0) {
         let jsonMockResp;
@@ -43,11 +43,11 @@ function StartInterview({ params }) {
               ? JSON.parse(result[0].jsonMockResp) // Parse if it's a string
               : result[0].jsonMockResp;
         } catch (error) {
-          console.error("❌ Error parsing JSON response:", error);
+          // console.error("❌ Error parsing JSON response:", error);
           return;
         }
 
-        console.log("✅ Parsed interview details:", jsonMockResp);
+        // console.log("✅ Parsed interview details:", jsonMockResp);
 
         // ✅ Handle case where jsonMockResp is already an array
         const questions = Array.isArray(jsonMockResp)
@@ -57,15 +57,15 @@ function StartInterview({ params }) {
         if (Array.isArray(questions) && questions.length > 0) {
           setMockInterviewQuestion(questions);
         } else {
-          console.error("⚠️ Invalid interview_questions format:", questions);
+          // console.error("⚠️ Invalid interview_questions format:", questions);
         }
 
         setInterviewData(result[0]);
       } else {
-        console.error("⚠️ No data found for the given interview ID.");
+        // console.error("⚠️ No data found for the given interview ID.");
       }
     } catch (error) {
-      console.error("❌ Error fetching interview details:", error);
+      // console.error("❌ Error fetching interview details:", error);
     }
   };
 
