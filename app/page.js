@@ -196,6 +196,7 @@ export default function Home() {
             <span className="bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text text-transparent font-medium border-b border-transparent hover:border-blue-400 transition-all">
               Saif Siddique
             </span>
+            
           </p>
         </div>
       </div>
