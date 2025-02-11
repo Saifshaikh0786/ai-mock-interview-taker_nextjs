@@ -8,14 +8,14 @@ function Header() {
 
     return (
         <header className="w-screen border-b border-slate-800 bg-gradient-to-b from-slate-900/95 to-slate-950/95 backdrop-blur-2xl shadow-2xl shadow-slate-950/50">
-            <div className="max-w-7xl mx-auto px-6 py-7 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto  py-2 flex items-center justify-between">
                 {/* Logo with floating effect */}
                 <div className="hover:-translate-y-0.5 transition-transform duration-300">
                     <img 
                     // logo ka link
-                        src="/logo.svg" 
-                        width={180}
-                        height={10}
+                        src="/logo.png" 
+                        width={240}
+                        height={20}
                         alt="InterviewIQ" 
                         className="filter brightness-0 invert opacity-90 hover:opacity-100 transition-opacity"
                     />
