@@ -24,10 +24,10 @@ function Header() {
                 {/* Navigation with animated indicators */}
                 <nav className="hidden md:flex items-center space-x-20">
                     {[
-                        { path: '/Dashboard', label: 'Dashboard' },
-                        { path: '/Dashboard/Questions', label: 'Questions' },
-                        { path: '/Dashboard/Upgrade', label: 'Premium' },
-                        { path: '/Dashboard/How', label: 'Guidance' }
+                         { path: '/Dashboard', label: 'Dashboard' },
+                         { path: '/Dashboard/Questions', label: 'Questions' },
+                         { path: '/Dashboard/About', label: 'About developer' },
+                         { path: '/Dashboard/works', label: 'How it works' },
                     ].map((item) => (
                         <a
                             key={item.path}

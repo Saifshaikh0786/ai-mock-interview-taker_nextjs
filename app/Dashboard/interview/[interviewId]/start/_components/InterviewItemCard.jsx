@@ -14,6 +14,12 @@ function InterviewItemCard({ interview }) {
         }
     };
 
+    const handleFeedback = () => {
+        if (interview?.mockId) {
+            router.push(`/Dashboard/interview/${interview.mockId}/feedback`);
+        }
+    };
+
     return (
         <div className="border border-slate-700/50 bg-slate-800/30 backdrop-blur-xl rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="space-y-3">
@@ -32,16 +38,16 @@ function InterviewItemCard({ interview }) {
                 </div>
             </div>
 
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-4 mt-6  sm:mt-6">
                 <Button 
-                     
-                    className="w-full border-slate-600 hover:bg-slate-700/20 hover:text-slate-200 text-slate-300"
+                    onClick={handleFeedback}
+                    className="  border-slate-600 hover:bg-slate-700/20 hover:text-slate-200 text-slate-300"
                 >
                     View Feedback
                 </Button>
                 <Button 
                     onClick={handleStartInterview}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 text-white"
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 text-white"
                 >
                     Restart Session
                 </Button>

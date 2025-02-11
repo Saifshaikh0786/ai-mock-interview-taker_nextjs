@@ -113,7 +113,7 @@ function AddNewInterview() {
 
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-slate-300">
-                                            Technical Requirements
+                                            Technologies you know and key responsibilities
                                         </label>
                                         <Textarea
                                             className="bg-slate-800 border-slate-700 focus:ring-2 focus:ring-purple-500 min-h-[120px] rounded-lg"
@@ -125,7 +125,7 @@ function AddNewInterview() {
 
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-slate-300">
-                                            Experience Level
+                                            Experience in years
                                         </label>
                                         <Input
                                             className="bg-slate-800 border-slate-700 focus:ring-2 focus:ring-purple-500 rounded-lg"
