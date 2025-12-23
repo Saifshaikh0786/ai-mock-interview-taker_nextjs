@@ -40,7 +40,7 @@ function AddNewInterview() {
         
         try {
             const InputPrompt = `Job position: ${jobPosition} Job Description: ${jobDesc} Years of Experience: ${jobExperience} Depends on Job Position,Job Description & Years of Experience give us ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTIONS_COUNT} Interview Question along with the answer in JSON format, Give us question and answers feild in JSON format only and nothing else extra text added out of JSON format.`;
-            
+
             const result = await chatSession.sendMessage(InputPrompt);
 
 
